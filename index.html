@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Anjea World</title>
+        <meta charset="UTF-8"/>
+        <meta name="description" content="Anjea's track around the world."/>
+        <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"/>
+        <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css' rel='stylesheet'/>
+
+        <style>
+            #myMap {
+                height: 100vh;
+                width: 100vw;
+            }
+            #fly {
+                display: block;
+                position: absolute;
+                z-index: 2;
+                margin-left: 10px;
+                margin-top: 10px;
+                padding: 10px;
+                border: 1px solid red;
+                border-radius: 3px;
+                background: black;
+            }
+            .glow {
+                font-size: 40px;
+                color: #fff;
+                text-align: center;
+                -webkit-animation: glow 1s ease-in-out infinite alternate;
+                -moz-animation: glow 1s ease-in-out infinite alternate;
+                animation: glow 1s ease-in-out infinite alternate;
+            }
+
+            @-webkit-keyframes glow {
+                from {
+                    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+                }
+                to {
+                    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="myMap">
+            <button id="fly" class='glow glow-animate'>Fly to Anjea</button>
+        </div>
+        <script>
+
+            mapboxgl.accessToken = 'pk.eyJ1IjoiZGFnYXJkbmVyIiwiYSI6ImNsNHVjN2ZoMDFqbnMzY2xwcndzNmJvb2EifQ.2rUdqVFjhY9-cYWaf1uyyQ';
+
+            // These options control the camera position after animation
+            const start = {
+                center: [
+                    136, -26
+                ],
+                zoom: 2.5,
+                pitch: 0,
+                bearing: 0
+            };
+            const end = {
+                center: [
+                    -55 - (4.8072 / 60),
+                    5 + (42.2257 / 60)
+                ],
+                zoom: 10,
+                bearing: 130,
+                pitch: 75
+            };
+            const map = new mapboxgl.Map({
+                container: 'myMap', // container ID
+                style: 'mapbox://styles/dagardner/cl6geg34x007i15ntt74lsria',
+                projection: 'globe',
+                ...start
+            });
+
+            map.on('load', () => {
+                map.addSource('route', {
+                    "type": "geojson",
+                    "data": "./assets/anjeaTrack.geojson"
+                })
+                map.addLayer({
+                    'id': 'route',
+                    'type': 'line',
+                    'source': 'route',
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': '#a00',
+                        'line-width': 2
+                    }
+                })
+
+            });
+            let isAtStart = true;
+            let fly = document.getElementById('fly');
+            fly.addEventListener('click', () => {
+                // depending on whether we're currently at point a or b,
+                // aim for point a or b
+                const target = isAtStart
+                    ? end
+                    : start;
+                isAtStart = !isAtStart;
+
+                map.flyTo({
+                    ...target, // Fly to the selected target
+                    duration: 20000, // Animate over 20seconds
+                    essential: true, // This animation is considered essential with
+                    //respect to prefers-reduced-motion
+                    curve: 1.5
+                });
+
+                fly.innerHTML = isAtStart
+                    ? "Fly to Anjea"
+                    : "Fly home";
+            });
+        </script>
+    </body>
+</html>
