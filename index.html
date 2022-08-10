@@ -10,7 +10,7 @@
         <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css' rel='stylesheet'/>
 
         <style>
-            #container{
+            #container {
                 position: relative;
                 height: 100vh;
                 width: 100vw;
@@ -51,8 +51,10 @@
         </style>
     </head>
     <body>
-        <div id="myMap"></div>
-        <button id="fly" class='glow glow-animate'>Fly to Anjea</button>
+        <div id="container">
+            <div id="myMap"></div>
+            <button id="fly" class='glow glow-animate'>Fly to Anjea</button>
+        </div>
         <script>
 
             mapboxgl.accessToken = 'pk.eyJ1IjoiZGFnYXJkbmVyIiwiYSI6ImNsNHVjN2ZoMDFqbnMzY2xwcndzNmJvb2EifQ.2rUdqVFjhY9-cYWaf1uyyQ';
